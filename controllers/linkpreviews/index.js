@@ -49,7 +49,17 @@ module.exports = function (router) {
                 createAndStorePreview(link, req.headers.host, cb);
             },
             function (err, results) {
-                return res.send(results);
+                var response = {};
+                
+                if (results && results.length > 0) {
+                    for (var i = 0; i < results.length; i++) {
+                        if (results[i]) {
+                            response[results[i].url] = results[i];
+                        }
+                    }
+                }
+
+                return res.send(response);
             }
         );
     });
