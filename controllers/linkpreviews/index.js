@@ -38,7 +38,6 @@ module.exports = function (router) {
     });
 
     router.post('/batchpreviews', function (req, res) {
-        console.log(req);
         var links = req.body.links;
 
         if (!links || links.length < 1) {
