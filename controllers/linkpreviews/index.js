@@ -57,6 +57,7 @@ module.exports = function (router) {
     function createAndStorePreview(link, host, cb) {
         LinkPreview.findOne({'url': link}, function (err, preview) {
             if (err) {
+                console.log(err);
                 if (cb) {
                     return cb(err, null);
                 }
@@ -67,6 +68,7 @@ module.exports = function (router) {
             } else {
                 Preview(link, function(err, data) {
                     if(err) {
+                        console.log(err);
                         if (cb) {
                             return cb(err, null);
                         }
@@ -77,6 +79,7 @@ module.exports = function (router) {
                                 function(image, cb) {
                                     resizeAndSaveImage(image, function(err, result) {
                                         if (err) {
+                                            console.log(err);
                                             cb(err, null);
                                         } else {
                                             cb(null, result);
@@ -97,10 +100,12 @@ module.exports = function (router) {
 
                                     LinkPreview.create(data, function(err, newPreview) {
                                         if (err) {
+                                            console.log(err);
                                             if (cb) {
                                                 cb(err, null);
                                             }
                                         } else if (!newPreview) {
+                                            console.log('could not create preview');
                                             if (cb) {
                                                 cb('could not create preview', null);
                                             } 
@@ -140,6 +145,7 @@ module.exports = function (router) {
                 return cb(null, img);
             },
             function(err) {
+                console.log(err);
                 return cb(err, null);
             }
         );
