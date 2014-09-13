@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 var linkPreviewModel = function () {
 	var linkPreviewSchema = mongoose.Schema({
 		url: {type: String, required: true, unique: true},
+		canonical_url: {type: String, required: true},
 		loadFailed: Boolean,
 		title: String,
 		description: String,

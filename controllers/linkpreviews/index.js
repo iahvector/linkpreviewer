@@ -77,6 +77,16 @@ module.exports = function (router) {
                 }
             } else {
                 Preview(link, function(err, data) {
+
+                    if (data.url.indexOf('http://') === 0) {
+                        data.canonical_url = data.url.substring(7);
+                    } else if (data.url.indexOf('https://') === 0) {
+                        data.canonical_url = data.url.substring(8);
+                    } else {
+                        data.canonical_url = data.url;
+                    }
+
+
                     if(err) {
                         console.log(err);
                         if (cb) {
