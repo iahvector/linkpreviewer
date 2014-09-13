@@ -100,7 +100,7 @@ module.exports = function (router) {
                                     for (var i = 0; i < data.images.length; i++) {
                                         var img = {'original_image': data.images[i]};
                                         if (results[i] && results[i].name) {
-                                            img.downsized_image = host + '/' + results[i].name;
+                                            img.downsized_image = results[i].name;
                                         } else {
                                             img.downsized_image = null;
                                         }
