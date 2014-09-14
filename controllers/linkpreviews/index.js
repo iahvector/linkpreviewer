@@ -22,7 +22,7 @@ module.exports = function (router) {
     });
 
     router.get('/preview', function (req, res) {
-        var link = req.body.link;
+        var link = req.query.link;
 
         if (!link) {
             return res.status(400).send('missing parameter: link');
@@ -32,6 +32,14 @@ module.exports = function (router) {
             if (err) {
                 return res.status(500).send(err);
             } else {
+                if (result.images && result.images.length > 0) {
+                    for (var i = 0; i < result.images.length; i++) {
+                        if (result.images[i].downsized_image) {
+                            result.images[i].downsized_image = req.headers.host + '/' + result.images[i].downsized_image;
+                        }
+                    }
+                }
+
                 return res.send(result);
             }
         });
@@ -54,6 +62,14 @@ module.exports = function (router) {
                 if (results && results.length > 0) {
                     for (var i = 0; i < results.length; i++) {
                         if (results[i]) {
+                            if (results[i].images && results[i].images.length > 0) {
+                                for (var j = 0; j < results[i].images.length; j++) {
+                                    if (results[i].images[j].downsized_image) {
+                                        results[i].images[j].downsized_image = req.headers.host + '/' + results[i].images[j].downsized_image;
+                                    }
+                                }
+                            }
+
                             response[results[i].url] = results[i];
                         }
                     }
@@ -78,14 +94,7 @@ module.exports = function (router) {
             } else {
                 Preview(link, function(err, data) {
 
-                    if (data.url.indexOf('http://') === 0) {
-                        data.canonical_url = data.url.substring(7);
-                    } else if (data.url.indexOf('https://') === 0) {
-                        data.canonical_url = data.url.substring(8);
-                    } else {
-                        data.canonical_url = data.url;
-                    }
-
+                    data.canonical_url = extractCanonicalUrl(data.url);
 
                     if(err) {
                         console.log(err);
@@ -169,5 +178,21 @@ module.exports = function (router) {
                 return cb(err, null);
             }
         );
+    }
+
+    function extractCanonicalUrl(url) {
+        var canonicalUrl = url;
+        
+        if (url.indexOf('http://') === 0) {
+            canonicalUrl = url.substring(7);
+        } else if (url.indexOf('https://') === 0) {
+            canonicalUrl = url.substring(8);
+        }
+
+        if (url.indexOf('/') > 0) {
+            canonicalUrl = canonicalUrl.substring(0,canonicalUrl.indexOf('/'));
+        }
+
+        return canonicalUrl;
     }
 };
